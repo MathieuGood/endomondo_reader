@@ -2,6 +2,8 @@ import json
 import os
 import csv
 
+import shutil
+
 
 path = 'C:\\Users\\bonma\\Desktop\\upload_endo\\Workouts\\JSON\\'
 
@@ -38,6 +40,13 @@ def get_sport(file):
 def get_file_list(path):
     dir_list = os.listdir(path)
     return dir_list
+
+
+def copy_file(file):
+    src_path = path + file
+    dst_path = path + '\\strava_out\\' + file
+    shutil.copy(src_path, dst_path)
+    print(file, 'copied')
 
 
 def main():
