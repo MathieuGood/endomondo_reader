@@ -1,18 +1,17 @@
 import json
 import os
 import csv
-
 import shutil
 
 
-path = 'C:\\Users\\bonma\\Desktop\\upload_endo\\Workouts\\JSON\\'
-
+path = 'C:\\Users\\bonma\\guru_code\\endomondo_reader\\upload_endo\\Workouts\\JSON\\'
 
 def get_sport(file):
 
     try:  
         o = json.load(open(path + file))
-    except json.decoder.JSONDecodeError:
+    # except json.decoder.JSONDecodeError:
+    except ValueError:
         print("Can't process", file)
 
     try:
@@ -27,7 +26,7 @@ def get_sport(file):
             round(sport_dic['distance_km'], 2),
             str(round(sport_dic['duration_s'] / 60)) + 'min'
             ]
-
+        print(output_list)
         return output_list
 
     except KeyError:
@@ -42,9 +41,10 @@ def get_file_list(path):
     return dir_list
 
 
-def copy_file(file):
-    src_path = path + file
-    dst_path = path + '\\strava_out\\' + file
+def copy_file(file, out_dir):
+    file = file.rstrip('.json') + '.tcx'
+    src_path = 'C:\\Users\\bonma\\guru_code\\endomondo_reader\\endo_full_save\\Workouts\\' + file
+    dst_path = 'C:\\Users\\bonma\\guru_code\\endomondo_reader\\' + out_dir + file
     shutil.copy(src_path, dst_path)
     print(file, 'copied')
 
@@ -57,9 +57,16 @@ def main():
         writer = csv.writer(csv_file)
         writer.writerow(['File', 'Start time', 'Sport', 'Distance', 'Duration'])
         for file in files:
+            print(file)
             sport = get_sport(file)
             if sport != None:
                 writer.writerow(sport)
+                if sport[2] == 'SKATEBOARDING':
+                    copy_file(file, 'strava_skate\\')
+                elif sport[2] == 'OTHER':
+                    copy_file(file, 'strava_other\\')
+
+
 
 
 if __name__ == '__main__':
